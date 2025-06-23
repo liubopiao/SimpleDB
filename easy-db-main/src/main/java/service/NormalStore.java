@@ -82,7 +82,7 @@ public class NormalStore implements Store,AutoCloseable {
 
         File file = new File(dataDir);
         if (!file.exists()) {
-            LoggerUtil.info(LOGGER,logFormat, "NormalStore","dataDir isn't exist,creating...");
+            LoggerUtil.info("NormalStore",logFormat, "NormalStore","dataDir isn't exist,creating...");
             file.mkdirs();
         }
         this.reloadIndex();
@@ -129,7 +129,7 @@ public class NormalStore implements Store,AutoCloseable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LoggerUtil.debug(LOGGER, logFormat, "reload index: "+index.toString());
+        LoggerUtil.info("NormalStore", logFormat, "reload index: "+index.toString());
     }
 
     @Override

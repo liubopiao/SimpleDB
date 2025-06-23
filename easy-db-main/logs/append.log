@@ -1,0 +1,14 @@
+[2025-06-23 20:08:24] [NormalStore] [NormalStore][{}]: {}
+[2025-06-23 20:08:24] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-23 20:08:27] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-23 20:08:27] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy12', value='for test'}
+[2025-06-23 20:08:27] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy12', value='for test'}
+[2025-06-23 20:08:27] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy13', value='for test13'}
+[2025-06-23 20:08:27] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy13', value='for test13'}
+[2025-06-23 20:08:27] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-23 20:08:44] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-23 20:08:44] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy12', value='for test'}
+[2025-06-23 20:08:44] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy12', value='for test'}
+[2025-06-23 20:08:44] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy13', value='for test13'}
+[2025-06-23 20:08:44] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy13', value='for test13'}
+[2025-06-23 20:08:44] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}

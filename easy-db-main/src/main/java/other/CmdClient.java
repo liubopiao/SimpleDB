@@ -5,7 +5,7 @@
  * @date 2024/6/13 13:58
  * @version
  */
-package client;
+package other;
 
 public class CmdClient{
 }
