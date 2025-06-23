@@ -10,11 +10,13 @@ package client;
 import dto.ActionDTO;
 import dto.ActionTypeEnum;
 import dto.RespDTO;
+import org.apache.log4j.net.SocketServer;
+import service.NormalStore;
 
 import java.io.*;
 import java.net.Socket;
 
-public class SocketClient implements Client {
+public class SocketClient implements Client,AutoCloseable {
     private String host;
     private int port;
 
@@ -32,9 +34,9 @@ public class SocketClient implements Client {
             ActionDTO dto = new ActionDTO(ActionTypeEnum.SET, key, value);
             oos.writeObject(dto);
             oos.flush();
-            RespDTO resp = (RespDTO) ois.readObject();
-            System.out.println("resp data: "+ resp.toString());
             // 接收响应数据
+            RespDTO resp = (RespDTO) ois.readObject();
+            System.out.println("resp data: set:"+ resp.toString());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -50,7 +52,7 @@ public class SocketClient implements Client {
             oos.writeObject(dto);
             oos.flush();
             RespDTO resp = (RespDTO) ois.readObject();
-            System.out.println("resp data: "+ resp.toString());
+            System.out.println("resp data: get:"+ resp.toString());
             // 接收响应数据
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -60,12 +62,37 @@ public class SocketClient implements Client {
 
     @Override
     public void rm(String key) {
+        try(Socket socket = new Socket(host, port);
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())){
+            ActionDTO dto = new ActionDTO(ActionTypeEnum.RM, key, null);
+            oos.writeObject(dto);
+            oos.flush();
+            RespDTO resp = (RespDTO) ois.readObject();
+            System.out.println("resp data: rm:"+ resp.toString());
 
+        }catch (IOException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setex(String key, String value, long seconds) {
 
+    }
+    @Override
+    public void close(){
+        try(Socket socket = new Socket(host, port);
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())){
+            ActionDTO dto = new ActionDTO(ActionTypeEnum.SHUTDOWN, null, null);
+            oos.writeObject(dto);
+            oos.flush();
+            RespDTO resp = (RespDTO) ois.readObject();
+            System.out.println("resp data: rm:"+ resp.toString());
+        }catch (IOException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
 }

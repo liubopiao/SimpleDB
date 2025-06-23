@@ -149,6 +149,8 @@ public class NormalStore implements Store,AutoCloseable {
             //int pos = RandomAccessFileUtil.write(this.genFilePath(), commandBytes);
             // 保存到memTable
             //这里是自己实现的代码，先写入内存，如果内存表满了，再写入磁盘
+
+            //批量写入
             memTable.put(key, command);
             System.out.println("当前长度："+memTable.size());
             // 判断是否需要刷盘
@@ -206,13 +208,17 @@ public class NormalStore implements Store,AutoCloseable {
             // TODO://先写内存表，内存表达到一定阀值再写进磁盘
 
             // 写table（wal）文件
-            RandomAccessFileUtil.writeInt(this.genFilePath(), commandBytes.length);
-            int pos = RandomAccessFileUtil.write(this.genFilePath(), commandBytes);
+//            RandomAccessFileUtil.writeInt(this.genFilePath(), commandBytes.length);
+//            int pos = RandomAccessFileUtil.write(this.genFilePath(), commandBytes);
             // 保存到memTable
-
+            memTable.put(key, command);
+            // 判断是否需要刷盘
+            if (memTable.size() >= MEMTABLE_FLUSH_THRESHOLD_COUNT) {
+                this.flushMemTable();
+            }
             // 添加索引
-            CommandPos cmdPos = new CommandPos(pos, commandBytes.length);
-            index.put(key, cmdPos);
+//            CommandPos cmdPos = new CommandPos(pos, commandBytes.length);
+//            index.put(key, cmdPos);
 
             // TODO://判断是否需要将内存表中的值写回table
 
@@ -265,7 +271,7 @@ public class NormalStore implements Store,AutoCloseable {
         //重写close
         if (!memTable.isEmpty()) {
             System.out.println("内存表未满,自动写入磁盘");
-            flushMemTable();
+            this.flushMemTable();
         }
     }
 

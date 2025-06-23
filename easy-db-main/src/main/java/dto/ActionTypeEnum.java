@@ -23,5 +23,5 @@ public enum ActionTypeEnum {
     /**
      * 创建表,设置主键
      */
-    CREATE,
+    SHUTDOWN,
 }

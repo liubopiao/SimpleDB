@@ -27,7 +27,7 @@ public class SocketServerHandler implements Runnable {
     private Socket socket;
     private Store store;
 
-    public SocketServerHandler(Socket socket, Store store) {
+    public SocketServerHandler(Socket socket, NormalStore store) {
         this.socket = socket;
         this.store = store;
     }
@@ -59,6 +59,15 @@ public class SocketServerHandler implements Runnable {
             }
             if (dto.getType() == ActionTypeEnum.RM) {
                 this.store.rm(dto.getKey());
+                RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
+                oos.writeObject(resp);
+                oos.flush();
+            }
+            if(dto.getType() == ActionTypeEnum.SHUTDOWN){
+                this.store.close();
+                RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
+                oos.writeObject(resp);
+                oos.flush();
             }
 
         } catch (IOException | ClassNotFoundException e) {

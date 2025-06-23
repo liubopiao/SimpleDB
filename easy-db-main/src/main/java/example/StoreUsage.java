@@ -29,6 +29,8 @@ public class StoreUsage {
 //            store.rm("zsy4");
 //            System.out.println(store.get("zsy4"));
 
+            store.scan();
+
             //关于建表
             //设置主键
             //设置统一前缀
@@ -44,6 +46,20 @@ public class StoreUsage {
 
             //data表不会清理旧数据
             //关于缓冲池
+
+            //日志实现
+
+            //除了SET,SETEX,RM 之外的其他操作
+
+            //批量操作 ok
+
+            //交互式
+
+            //数据冗余
+
+            //k-v数据库的用途
+
+            //底层数据库 MyKeyValueDB 没有任何同步机制
         }
     }
 }

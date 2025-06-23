@@ -28,9 +28,9 @@ public class SocketServerController implements Controller {
     private final String logFormat = "[SocketServerController][{}]: {}";
     private String host;
     private int port;
-    private Store store;
+    private NormalStore store;
 
-    public SocketServerController(String host, int port, Store store) {
+    public SocketServerController(String host, int port, NormalStore store) {
         this.host = host;
         this.port = port;
         this.store = store;

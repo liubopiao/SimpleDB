@@ -56,6 +56,7 @@ public class MyKeyValueDB {
     public void del(String key) {
         store.remove(key);
         // 可以写入删除日志
+
     }
 
     // 持久化到文件（简单追加）
