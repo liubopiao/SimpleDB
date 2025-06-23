@@ -19,17 +19,25 @@ import java.net.Socket;
 public class SocketClient implements Client,AutoCloseable {
     private String host;
     private int port;
+    private static Socket socket;
+    private static ObjectOutputStream oos;
+    private static ObjectInputStream ois;
 
     public SocketClient(String host, int port) {
         this.host = host;
         this.port = port;
+        try {
+            socket= new Socket(host, port);
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void set(String key, String value) {
-        try (Socket socket = new Socket(host, port);
-             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+        try {
             // 传输序列化对象
             ActionDTO dto = new ActionDTO(ActionTypeEnum.SET, key, value);
             oos.writeObject(dto);
@@ -44,9 +52,7 @@ public class SocketClient implements Client,AutoCloseable {
 
     @Override
     public String get(String key) {
-        try (Socket socket = new Socket(host, port);
-             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+        try {
             // 传输序列化对象
             ActionDTO dto = new ActionDTO(ActionTypeEnum.GET, key, null);
             oos.writeObject(dto);
@@ -62,9 +68,7 @@ public class SocketClient implements Client,AutoCloseable {
 
     @Override
     public void rm(String key) {
-        try(Socket socket = new Socket(host, port);
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())){
+        try{
             ActionDTO dto = new ActionDTO(ActionTypeEnum.RM, key, null);
             oos.writeObject(dto);
             oos.flush();
@@ -82,9 +86,7 @@ public class SocketClient implements Client,AutoCloseable {
     }
     @Override
     public void close(){
-        try(Socket socket = new Socket(host, port);
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())){
+        try{
             ActionDTO dto = new ActionDTO(ActionTypeEnum.SHUTDOWN, null, null);
             oos.writeObject(dto);
             oos.flush();

@@ -37,40 +37,47 @@ public class SocketServerHandler implements Runnable {
         try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
              ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
 
-            // 接收序列化对象
-            ActionDTO dto = (ActionDTO) ois.readObject();
-            LoggerUtil.debug(LOGGER, "[SocketServerHandler][ActionDTO]: {}", dto.toString());
-            System.out.println("" + dto.toString());
+            while (!socket.isClosed()){
+                try{
+                    // 接收序列化对象
+                    ActionDTO dto = (ActionDTO) ois.readObject();
+                    LoggerUtil.debug(LOGGER, "[SocketServerHandler][ActionDTO]: {}", dto.toString());
+                    System.out.println("" + dto.toString());
 
-            // 处理命令逻辑(TODO://改成可动态适配的模式)
-            if (dto.getType() == ActionTypeEnum.GET) {
-                String value = this.store.get(dto.getKey());
-                LoggerUtil.debug(LOGGER, "[SocketServerHandler][run]: {}", "get action resp" + dto.toString());
-                RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, value);
-                oos.writeObject(resp);
-                oos.flush();
+                    // 处理命令逻辑(TODO://改成可动态适配的模式)
+                    if (dto.getType() == ActionTypeEnum.GET) {
+                        String value = this.store.get(dto.getKey());
+                        LoggerUtil.debug(LOGGER, "[SocketServerHandler][run]: {}", "get action resp" + dto.toString());
+                        RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, value);
+                        oos.writeObject(resp);
+                        oos.flush();
+                    }
+                    if (dto.getType() == ActionTypeEnum.SET) {
+                        this.store.set(dto.getKey(), dto.getValue());
+                        LoggerUtil.debug(LOGGER, "[SocketServerHandler][run]: {}", "set action resp" + dto.toString());
+                        RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
+                        oos.writeObject(resp);
+                        oos.flush();
+                    }
+                    if (dto.getType() == ActionTypeEnum.RM) {
+                        this.store.rm(dto.getKey());
+                        RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
+                        oos.writeObject(resp);
+                        oos.flush();
+                    }
+                    if(dto.getType() == ActionTypeEnum.SHUTDOWN){
+                        this.store.close();
+                        RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
+                        oos.writeObject(resp);
+                        oos.flush();
+                    }
+                }catch (IOException | ClassNotFoundException e) {
+                    // 客户端断开连接，正常退出
+                    System.out.println("客户端断开连接: " + e.getMessage());
+                    break;
+                }
             }
-            if (dto.getType() == ActionTypeEnum.SET) {
-                this.store.set(dto.getKey(), dto.getValue());
-                LoggerUtil.debug(LOGGER, "[SocketServerHandler][run]: {}", "set action resp" + dto.toString());
-                RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
-                oos.writeObject(resp);
-                oos.flush();
-            }
-            if (dto.getType() == ActionTypeEnum.RM) {
-                this.store.rm(dto.getKey());
-                RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
-                oos.writeObject(resp);
-                oos.flush();
-            }
-            if(dto.getType() == ActionTypeEnum.SHUTDOWN){
-                this.store.close();
-                RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
-                oos.writeObject(resp);
-                oos.flush();
-            }
-
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
