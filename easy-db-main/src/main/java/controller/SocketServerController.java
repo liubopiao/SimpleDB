@@ -7,6 +7,7 @@
  */
 package controller;
 
+import dto.ActionDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -15,10 +16,13 @@ import service.NormalStore;
 import service.Store;
 import utils.LoggerUtil;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -35,6 +39,7 @@ public class SocketServerController implements Controller {
         this.host = host;
         this.port = port;
         this.store = store;
+        store.startRewriteTask(5000);
     }
 
     @Override
@@ -72,4 +77,7 @@ public class SocketServerController implements Controller {
         }
 
     }
+
+
+
 }

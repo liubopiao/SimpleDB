@@ -41,7 +41,6 @@ public class SocketServerHandler implements Runnable {
                 try{
                     // 接收序列化对象
                     ActionDTO dto = (ActionDTO) ois.readObject();
-//                    LoggerUtil.debug(LOGGER, "[SocketServerHandler][ActionDTO]: {}", dto.toString());
                     LoggerUtil.info("SocketServerHandler", "收到命令: %s", dto.toString());
 
                     System.out.println("" + dto.toString());
@@ -49,7 +48,6 @@ public class SocketServerHandler implements Runnable {
                     // 处理命令逻辑(TODO://改成可动态适配的模式)
                     if (dto.getType() == ActionTypeEnum.GET) {
                         String value = this.store.get(dto.getKey());
-//                        LoggerUtil.debug(LOGGER, "[SocketServerHandler][run]: {}", "get action resp" + dto.toString());
                         LoggerUtil.info("SocketServerHandler", "收到命令: %s", dto.toString());
                         RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, value);
                         oos.writeObject(resp);
@@ -57,7 +55,6 @@ public class SocketServerHandler implements Runnable {
                     }
                     if (dto.getType() == ActionTypeEnum.SET) {
                         this.store.set(dto.getKey(), dto.getValue());
-//                        LoggerUtil.debug(LOGGER, "[SocketServerHandler][run]: {}", "set action resp" + dto.toString());
                         LoggerUtil.info("SocketServerHandler", "收到命令: %s", dto.toString());
                         RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
                         oos.writeObject(resp);

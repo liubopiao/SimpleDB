@@ -21,7 +21,7 @@ public enum ActionTypeEnum {
     * */
     GET,
     /**
-     * 创建表,设置主键
+     * 将内存表数据写入磁盘
      */
     SHUTDOWN,
 }

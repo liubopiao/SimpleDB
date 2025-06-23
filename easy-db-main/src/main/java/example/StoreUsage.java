@@ -53,7 +53,7 @@ public class StoreUsage {
 
             //批量操作 ok
 
-            //交互式
+            //交互式 ok
 
             //数据冗余
 

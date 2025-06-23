@@ -17,4 +17,8 @@ public interface Store extends Closeable {
     void rm(String key);
 
     void scan();
+
+    public void rewritePersistenceFile();
+
+    public void startRewriteTask(long intervalMillis);
 }

@@ -10,6 +10,7 @@ package service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import controller.SocketServerHandler;
+import dto.ActionDTO;
 import model.command.Command;
 import model.command.CommandPos;
 import model.command.RmCommand;
@@ -20,9 +21,7 @@ import utils.CommandUtil;
 import utils.LoggerUtil;
 import utils.RandomAccessFileUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.jar.JarEntry;
 
-public class NormalStore implements Store,AutoCloseable {
+public class NormalStore implements Store, AutoCloseable {
 
     public static final String TABLE = ".table";
     public static final String RW_MODE = "rw";
@@ -44,14 +43,16 @@ public class NormalStore implements Store,AutoCloseable {
      * 内存表，类似缓存
      */
     private TreeMap<String, Command> memTable;
+    private TreeMap<String, Command> tempMemTable;
+
 
     //private static final int MEMTABLE_FLUSH_THRESHOLD = 1024; // 1KB
     // 或按记录数
-     private static final int MEMTABLE_FLUSH_THRESHOLD_COUNT = 30;
+    private static final int MEMTABLE_FLUSH_THRESHOLD_COUNT = 30;
 
     /**
      * hash索引，存的是数据长度和偏移量
-     * */
+     */
     private HashMap<String, CommandPos> index;
 
     /**
@@ -73,19 +74,19 @@ public class NormalStore implements Store,AutoCloseable {
      * 持久化阈值
      */
 //    private final int storeThreshold;
-
     public NormalStore(String dataDir) {
         this.dataDir = dataDir;
         this.indexLock = new ReentrantReadWriteLock();
         this.memTable = new TreeMap<String, Command>();
+        this.tempMemTable = new TreeMap<String, Command>();
         this.index = new HashMap<>();
 
         File file = new File(dataDir);
         if (!file.exists()) {
-            LoggerUtil.info("NormalStore",logFormat, "NormalStore","dataDir isn't exist,creating...");
+            LoggerUtil.info("NormalStore", logFormat, "NormalStore", "dataDir isn't exist,creating...");
             file.mkdirs();
         }
-        this.reloadIndex();
+        this.reload();
     }
 
     public String genFilePath() {
@@ -94,10 +95,9 @@ public class NormalStore implements Store,AutoCloseable {
     }
 
 
-    public void reloadIndex() {
-        try {
-            RandomAccessFile file = new RandomAccessFile(this.genFilePath(), RW_MODE);
-            System.out.println("当前路径:"+this.genFilePath());
+    public void reload() {
+        try (RandomAccessFile file = new RandomAccessFile(this.genFilePath(), RW_MODE)) {
+            System.out.println("当前路径:" + this.genFilePath());
             long len = file.length();
             long start = 0;
             file.seek(start);
@@ -111,25 +111,25 @@ public class NormalStore implements Store,AutoCloseable {
                  * 就会被 GC 回收，不会造成内存泄漏。
                  */
                 byte[] bytes = new byte[cmdLen];
-                if(cmdLen>99999){
+                if (cmdLen > 99999) {
                     System.out.println("读取到异常数据");
-                    System.out.println("当前长度:"+cmdLen);
+                    System.out.println("当前长度:" + cmdLen);
                 }
                 file.read(bytes);
                 JSONObject value = JSON.parseObject(new String(bytes, StandardCharsets.UTF_8));
                 Command command = CommandUtil.jsonToCommand(value);
-                start += 4;
+                start += 4 + cmdLen;
                 if (command != null) {
                     CommandPos cmdPos = new CommandPos((int) start, cmdLen);
                     index.put(command.getKey(), cmdPos);
+                    tempMemTable.put(command.getKey(), command);
                 }
-                start += cmdLen;
             }
             file.seek(file.length());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LoggerUtil.info("NormalStore", logFormat, "reload index: "+index.toString());
+        LoggerUtil.info("NormalStore", logFormat, "reload index: " + index.toString());
     }
 
     @Override
@@ -152,7 +152,7 @@ public class NormalStore implements Store,AutoCloseable {
 
             //批量写入
             memTable.put(key, command);
-            System.out.println("当前长度："+memTable.size());
+            System.out.println("当前长度：" + memTable.size());
             // 判断是否需要刷盘
             if (memTable.size() >= MEMTABLE_FLUSH_THRESHOLD_COUNT) {
                 this.flushMemTable();
@@ -181,7 +181,7 @@ public class NormalStore implements Store,AutoCloseable {
 
             //将 JSON 格式的字符串解析为 JSONObject 对象
             JSONObject value = JSONObject.parseObject(new String(commandBytes));
-            System.out.println("JSON序列为:"+value);
+            System.out.println("JSON序列为:" + value);
             Command cmd = CommandUtil.jsonToCommand(value);
             if (cmd instanceof SetCommand) {
                 return ((SetCommand) cmd).getValue();
@@ -229,9 +229,9 @@ public class NormalStore implements Store,AutoCloseable {
         }
     }
 
-/**
- * 遍历 .table 文件，打印所有条目
- */
+    /**
+     * 遍历 .table 文件，打印所有条目
+     */
     @Override
     public void scan() {
         String filePath = genFilePath();
@@ -316,5 +316,78 @@ public class NormalStore implements Store,AutoCloseable {
             file.close();
         }
     }
+    // 将内存中的有效数据重新写入文件，覆盖原有文件
 
+    /**
+     * 重写持久化文件，清理冗余数据
+     */
+    @Override
+    public void rewritePersistenceFile() {
+        String filePath = genFilePath();
+        String tempFilePath = filePath + ".rewrite.tmp";
+
+        try {
+            // 1. 清空当前内存表和索引
+            tempMemTable.clear();
+            index.clear();
+
+            // 2. 从原始文件中加载所有有效数据到内存和索引表
+            reload();  //重建 index 和 TempMemTable
+
+            // 3. 创建临时文件用于写入新数据
+            RandomAccessFile tempFile = new RandomAccessFile(tempFilePath, RW_MODE);
+            tempFile.setLength(0); // 清空文件内容
+
+            // 4. 将内存中有效的数据写入临时文件
+            for (Map.Entry<String, Command> entry : tempMemTable.entrySet()) {
+                String key = entry.getKey();
+                Command command = entry.getValue();
+                byte[] bytes = JSONObject.toJSONBytes(command);
+
+                // 写入长度前缀和命令数据
+                tempFile.writeInt(bytes.length);
+                tempFile.write(bytes);
+
+                int pos = (int) (tempFile.getFilePointer() - bytes.length);
+                index.put(key, new CommandPos(pos, bytes.length));
+            }
+
+            // 5. 关闭临时文件
+            tempFile.close();
+
+            // 6. 替换原文件
+            File oldFile = new File(filePath);
+            File newFile = new File(tempFilePath);
+
+            if (oldFile.exists()) {
+                oldFile.delete();  // 删除旧文件
+            }
+
+            if (newFile.renameTo(oldFile)) {
+                System.out.println("持久化文件重写完成，冗余数据已清理");
+            } else {
+                throw new IOException("文件替换失败: " + tempFilePath + " -> " + filePath);
+            }
+
+        } catch (IOException e) {
+            System.err.println("持久化文件重写失败: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void startRewriteTask(long intervalMillis) {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(intervalMillis); // 按时间间隔执行
+                    rewritePersistenceFile();    // 执行重写
+                } catch (InterruptedException e) {
+                    System.out.println("持久化重写任务已停止");
+                    break;
+                }
+            }
+        }, "Persistence-Rewrite-Thread").start();
+    }
 }
