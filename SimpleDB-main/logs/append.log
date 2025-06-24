@@ -1,0 +1,201 @@
+[2025-06-24 23:58:23] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:58:23] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:58:23] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-24 23:58:26] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-24 23:58:26] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy12', value='for test'}
+[2025-06-24 23:58:26] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy12', value='for test'}
+[2025-06-24 23:58:26] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy13', value='for test13'}
+[2025-06-24 23:58:26] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy13', value='for test13'}
+[2025-06-24 23:58:26] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-24 23:58:28] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:58:33] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:58:35] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-24 23:58:38] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:58:43] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:58:46] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='four', value='444'}
+[2025-06-24 23:58:46] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='four', value='444'}
+[2025-06-24 23:58:48] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:58:53] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:58:56] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-24 23:58:56] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-24 23:58:58] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:59:00] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:59:03] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:59:08] [NormalStore] [NormalStore][{}]: {}
+[2025-06-24 23:59:13] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:01:52] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:01:52] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:01:56] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:01:57] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:00] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:02:02] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:07] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:10] [SocketServerHandler] 收到命令: ActionDTO{type=GET, key='four', value='null'}
+[2025-06-25 00:02:10] [SocketServerHandler] 收到命令: ActionDTO{type=GET, key='four', value='null'}
+[2025-06-25 00:02:12] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:17] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:20] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='five', value='555'}
+[2025-06-25 00:02:20] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='five', value='555'}
+[2025-06-25 00:02:22] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:27] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:32] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:32] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='six', value='666'}
+[2025-06-25 00:02:32] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='six', value='666'}
+[2025-06-25 00:02:37] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:42] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:02:47] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:03:08] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:03:14] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:03:38] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:03:49] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:03:49] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:03:54] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:03:59] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:04] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:09] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:04:09] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:14] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:15] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='six', value='6'}
+[2025-06-25 00:04:15] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='six', value='6'}
+[2025-06-25 00:04:19] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:24] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:27] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:29] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:33] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 00:04:33] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 00:04:34] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:38] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:39] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:04:44] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:09:33] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:09:33] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:09:37] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:09:38] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:09:43] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:09:44] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='four', value='hello'}
+[2025-06-25 00:09:44] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='four', value='hello'}
+[2025-06-25 00:09:46] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 00:09:46] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 00:09:48] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:09:50] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:09:53] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:57:43] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:57:43] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:57:48] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:57:53] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:57:57] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:57:57] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 00:57:58] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:58:03] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:58:08] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:58:13] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:24] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:24] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:59:27] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 00:59:27] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 00:59:27] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 00:59:27] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 00:59:29] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:34] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:35] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:39] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:44] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:49] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:54] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 00:59:57] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:00:48] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:00:48] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:00:53] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:00:55] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:00:55] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 01:00:55] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 01:00:55] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 01:00:58] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:03] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:05] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:08] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:13] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:18] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:23] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:28] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:33] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:35] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:01:35] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='eight', value='88888'}
+[2025-06-25 01:01:35] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='eight', value='88888'}
+[2025-06-25 01:01:35] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 01:01:38] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:39] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:43] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:01:48] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:04:35] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:04:35] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:04:40] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:04:40] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:04:40] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='eight', value='88888'}
+[2025-06-25 01:04:40] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='eight', value='88888'}
+[2025-06-25 01:04:40] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 01:04:45] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:04:50] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:04:53] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:04:55] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:05:00] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:06:30] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:06:30] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:06:33] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:06:33] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='eight', value='88888'}
+[2025-06-25 01:06:33] [SocketServerHandler+setex] 收到命令: ActionDTO{type=SETEX, key='eight', value='88888'}
+[2025-06-25 01:06:33] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 01:06:36] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:06:41] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:06:46] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:06:51] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:06:52] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:06:56] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:07:01] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:07:06] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:07:10] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:07:10] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy15', value='for test15'}
+[2025-06-25 01:07:10] [SocketServerHandler] 收到命令: ActionDTO{type=SET, key='zsy15', value='for test15'}
+[2025-06-25 01:07:10] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 01:07:11] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:07:14] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:07:16] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:21] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:21] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:17:26] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:28] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:17:28] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 01:17:28] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 01:17:28] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 01:17:31] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:36] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:41] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:46] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:51] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:53] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:17:56] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:18:01] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:18:06] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:18:11] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:18:16] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:21:48] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:21:48] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:21:53] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:21:58] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:21:58] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 01:21:58] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 01:21:58] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 01:21:58] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:22:03] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:22:08] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:22:13] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:22:15] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:24:44] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:24:44] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:24:48] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 01:24:48] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 01:24:48] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 01:24:48] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 01:24:49] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:24:52] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 01:24:54] [NormalStore] [NormalStore][{}]: {}
