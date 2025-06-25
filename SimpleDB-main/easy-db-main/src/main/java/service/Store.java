@@ -8,6 +8,7 @@
 package service;
 
 import model.command.Command;
+import model.command.SetexCommand;
 
 import java.io.Closeable;
 
@@ -26,7 +27,9 @@ public interface Store extends Closeable {
 
     public void startRewriteTask(long intervalMillis);
 
-    void isExpired(Command command);
+    boolean isExpired(Command command);
 
     public void startCleanupTask();
+
+    public void cleanupExpiredKeys();
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 public class SetexCommand extends AbstractCommand {
     private String key;
     private String value;
-    private long seconds;
+    private Long seconds;
 
     public SetexCommand(String key, String value, long seconds) {
         super(CommandTypeEnum.SETEX);

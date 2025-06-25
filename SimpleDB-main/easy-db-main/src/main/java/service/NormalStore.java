@@ -204,7 +204,7 @@ public class NormalStore implements Store, AutoCloseable {
             if (cmd instanceof RmCommand) {
                 return null;
             }
-            if(cmd instanceof SetexCommand){
+            if(cmd instanceof SetexCommand && this.isExpired(cmd)){
                 return ((SetexCommand) cmd).getValue();
             }
 
@@ -276,7 +276,7 @@ public class NormalStore implements Store, AutoCloseable {
                         System.out.println("Key removed: " + rmCmd.getKey());
                     } else if (command instanceof SetexCommand) {
                         SetexCommand setexCommand = (SetexCommand) command;
-                        System.out.println("Key: " + setexCommand.getKey() + ", Value: " + setexCommand.getValue() + "seconds:" + setexCommand.getSeconds());
+                        System.out.println("Key: " + setexCommand.getKey() + ", Value: " + setexCommand.getValue() + ", seconds:" + setexCommand.getSeconds());
                     }
                 }
             }
@@ -413,12 +413,59 @@ public class NormalStore implements Store, AutoCloseable {
     }
 
     @Override
-    public void isExpired(Command command) {
-
+    public boolean isExpired(Command command) {
+        if(command instanceof SetexCommand){
+            return ((SetexCommand) command).getSeconds()!= null && ((SetexCommand) command).getSeconds() < System.currentTimeMillis();
+        }
+        return false;
     }
 
     @Override
     public void startCleanupTask() {
-
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(60_000); // 每分钟检查一次过期键
+                    cleanupExpiredKeys();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt(); // 重新设置中断标志
+                    System.out.println("清理任务被中断");
+                    break;
+                }
+            }
+        }, "Cleanup-Thread").start();
     }
+    public void cleanupExpiredKeys() {
+        indexLock.writeLock().lock();
+        try {
+            // 遍历 tempMemTable 并移除过期键
+            tempMemTable.entrySet().removeIf(entry -> isExpired(entry.getValue()));
+
+//            // 遍历 index 并移除对应的过期键
+//            index.entrySet().removeIf(entry -> {
+////                Command command = tempMemTable.get(entry.getKey());
+//                String key = entry.getKey();
+//                // 从 tempMemTable 中获取命令
+//                Command command = tempMemTable.get(key);
+//                return command != null && isExpired(command);
+//            });
+
+            // 遍历 index 并移除对应的过期键
+            index.entrySet().removeIf(entry -> {
+                try {
+                    String key = entry.getKey();
+                    // 从 tempMemTable 中获取命令
+                    Command command = tempMemTable.get(key);
+                    return command != null && isExpired(command);
+                } catch (Exception e) {
+                    return false; // 出错时不删除
+                }
+            });
+
+            System.out.println("已完成过期键清理");
+        } finally {
+            indexLock.writeLock().unlock();
+        }
+    }
+
 }

@@ -61,7 +61,7 @@ public class SocketServerHandler implements Runnable {
                         oos.flush();
                     }
                     if(dto.getType() == ActionTypeEnum.SETEX){
-                        this.store.setex(dto.getKey(), dto.getValue(), Long.parseLong(dto.getValue()));
+                        this.store.setex(dto.getKey(), dto.getValue(), dto.getSeconds());
                         LoggerUtil.info("SocketServerHandler", "收到命令: %s", dto.toString());
                         RespDTO resp = new RespDTO(RespStatusTypeEnum.SUCCESS, null);
                         oos.writeObject(resp);

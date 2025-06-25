@@ -199,3 +199,64 @@
 [2025-06-25 01:24:49] [NormalStore] [NormalStore][{}]: {}
 [2025-06-25 01:24:52] [NormalStore] [NormalStore][{}]: {}
 [2025-06-25 01:24:54] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:51:17] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:51:34] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:51:34] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 14:51:39] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:51:44] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:51:49] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:51:50] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:51:54] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:52:44] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:52:44] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 14:52:46] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:52:49] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:52:53] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 14:52:53] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 14:52:53] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 14:52:53] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 14:52:54] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:52:59] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:52:59] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:04] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:09] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:14] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:19] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:24] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:29] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:34] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:39] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:44] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:49] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:54] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:53:59] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:05] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:10] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:15] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:20] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:25] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:30] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:35] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:40] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:45] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:54:50] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:02] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:02] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 14:55:06] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:07] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:12] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:16] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 14:55:16] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 14:55:16] [SocketServerHandler] 收到命令: ActionDTO{type=SETEX, key='seven', value='777'}
+[2025-06-25 14:55:16] [SocketServerHandler] 收到命令: ActionDTO{type=SHUTDOWN, key='null', value='null'}
+[2025-06-25 14:55:17] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:21] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:22] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:27] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:55:32] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:56:32] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:56:32] [SocketServerController] [SocketServerController][{}]: {}
+[2025-06-25 14:56:37] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:56:42] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:56:42] [NormalStore] [NormalStore][{}]: {}
+[2025-06-25 14:56:47] [NormalStore] [NormalStore][{}]: {}
