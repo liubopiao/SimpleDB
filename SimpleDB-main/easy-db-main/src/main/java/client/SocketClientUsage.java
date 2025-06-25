@@ -16,7 +16,7 @@ public class SocketClientUsage {
 //        client.set("zsy12","for test");
 //        client.set("zsy15","for test15");
 
-        client.setex("seven","777",1000L);
+        client.setex("seven","777",100L);
 //        client.setex("eight","88888",1000L);
 
 //        client.get("zsy12");

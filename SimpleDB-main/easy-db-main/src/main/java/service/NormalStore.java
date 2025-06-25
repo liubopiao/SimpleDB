@@ -25,6 +25,8 @@ import java.util.TreeMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.jar.JarEntry;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
 
 public class NormalStore implements Store, AutoCloseable {
 
@@ -355,6 +357,10 @@ public class NormalStore implements Store, AutoCloseable {
             // 2. 从原始文件中加载所有有效数据到内存和索引表
             reload();  //重建 index 和 TempMemTable
 
+            //定期清理过期键
+            cleanupExpiredKeys();
+
+
             // 3. 创建临时文件用于写入新数据
             RandomAccessFile tempFile = new RandomAccessFile(tempFilePath, RW_MODE);
             tempFile.setLength(0); // 清空文件内容
@@ -425,7 +431,7 @@ public class NormalStore implements Store, AutoCloseable {
         new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(60_000); // 每分钟检查一次过期键
+                    Thread.sleep(5000); // 每5秒检查一次过期键
                     cleanupExpiredKeys();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt(); // 重新设置中断标志
@@ -467,5 +473,33 @@ public class NormalStore implements Store, AutoCloseable {
             indexLock.writeLock().unlock();
         }
     }
+
+    private byte[] compress(byte[] data) {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
+             DeflaterOutputStream dos = new DeflaterOutputStream(bos)) {
+            dos.write(data);
+            dos.finish();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("压缩失败", e);
+        }
+    }
+
+    private byte[] decompress(byte[] data) {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
+             InflaterInputStream iis = new InflaterInputStream(bis);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = iis.read(buffer)) > 0) {
+                bos.write(buffer, 0, len);
+            }
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("解压失败", e);
+        }
+    }
+
 
 }

@@ -44,7 +44,11 @@ public class StoreUsage {
 
             //k-v数据库的用途 ok
 
-            //底层数据库 MyKeyValueDB 没有任何同步机制
+            //setex ok
+
+            //定期清理过期键 ok
+
+            //多进程 ok
         }
     }
 }

@@ -34,7 +34,7 @@ public class SocketServerController implements Controller {
         this.port = port;
         this.store = store;
         store.startRewriteTask(5000);
-        store.startCleanupTask();
+//        store.startCleanupTask();
     }
 
     @Override
