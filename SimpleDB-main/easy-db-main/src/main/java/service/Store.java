@@ -11,6 +11,7 @@ import model.command.Command;
 import model.command.SetexCommand;
 
 import java.io.Closeable;
+import java.io.File;
 
 public interface Store extends Closeable {
     void set(String key, String value);
@@ -32,4 +33,10 @@ public interface Store extends Closeable {
     public void startCleanupTask();
 
     public void cleanupExpiredKeys();
+
+    public void compactWal();
+
+    public void loadFile(File file);
+
+    public void reload();
 }

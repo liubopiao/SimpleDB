@@ -10,21 +10,18 @@ package client;
 import dto.ActionDTO;
 import dto.ActionTypeEnum;
 import dto.RespDTO;
-import model.command.Command;
-import org.apache.log4j.net.SocketServer;
-import service.NormalStore;
 
 import java.io.*;
 import java.net.Socket;
 
-public class SocketClient implements Client, AutoCloseable {
+public class SocketClientController implements Client, AutoCloseable {
     private String host;
     private int port;
     private static Socket socket;
     private static ObjectOutputStream oos;
     private static ObjectInputStream ois;
 
-    public SocketClient(String host, int port) {
+    public SocketClientController(String host, int port) {
         this.host = host;
         this.port = port;
         try {
@@ -103,7 +100,7 @@ public class SocketClient implements Client, AutoCloseable {
             oos.writeObject(dto);
             oos.flush();
             RespDTO resp = (RespDTO) ois.readObject();
-            System.out.println("resp data: rm:" + resp.toString());
+            System.out.println("resp data: close:" + resp.toString());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

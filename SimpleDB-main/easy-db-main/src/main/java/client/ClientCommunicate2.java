@@ -7,7 +7,7 @@ public class ClientCommunicate2 {
         String host = "localhost";
         int port = 12345;
 
-        try (SocketClient client = new SocketClient(host, port)) {
+        try (SocketClientController client = new SocketClientController(host, port)) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("欢迎使用 easy-db 客户端。输入 help 查看帮助。");
 

@@ -7,7 +7,7 @@ public class ClientCommunicate {
         String host = "localhost";
         int port = 12345;
 
-        try (SocketClient client = new SocketClient(host, port)) {
+        try (SocketClientController client = new SocketClientController(host, port)) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("欢迎使用 easy-db 客户端。输入 help 查看帮助。");
 
@@ -65,6 +65,10 @@ public class ClientCommunicate {
                     case "help":
                         printHelp();
                         break;
+                    case "refresh":
+                        System.out.println("将内存表记录写入磁盘");
+                        client.close();
+                        break;
 
                     default:
                         System.out.println("未知命令: " + command);
@@ -86,5 +90,6 @@ public class ClientCommunicate {
         System.out.println("  rm <key>            删除键");
         System.out.println("  exit/quit           退出客户端");
         System.out.println("  help                显示帮助信息");
+        System.out.println("  refresh             刷盘");
     }
 }

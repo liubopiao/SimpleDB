@@ -26,19 +26,23 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.jar.JarEntry;
 import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.InflaterInputStream;
 
 public class NormalStore implements Store, AutoCloseable {
 
     public static final String TABLE = ".table";
     public static final String RW_MODE = "rw";
+    public static final String R_MODE = "r";
     public static final String NAME = "data";
     private final Logger LOGGER = LoggerFactory.getLogger(NormalStore.class);
     private final String logFormat = "[NormalStore][{}]: {}";
 
 
     /**
-     * 内存表，类似缓存
+     * 内存表memTable，存放将要存进磁盘的记录
+     * 缓存tempMemTable，存放磁盘的数据，用于删除冗余记录和查询优化
      */
     private TreeMap<String, Command> memTable;
     private TreeMap<String, Command> tempMemTable;
@@ -47,6 +51,9 @@ public class NormalStore implements Store, AutoCloseable {
     //private static final int MEMTABLE_FLUSH_THRESHOLD = 1024; // 1KB
     // 或按记录数
     private static final int MEMTABLE_FLUSH_THRESHOLD_COUNT = 30;
+
+    // 在 NormalStore 类中添加配置项
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
     /**
      * hash索引，存的是数据长度和偏移量
@@ -85,6 +92,7 @@ public class NormalStore implements Store, AutoCloseable {
             file.mkdirs();
         }
         this.reload();
+        this.replayWal(); // 从 .wal 回放
     }
 
     public String genFilePath() {
@@ -92,9 +100,28 @@ public class NormalStore implements Store, AutoCloseable {
         return this.dataDir + File.separator + NAME + TABLE;
     }
 
-
     public void reload() {
-        try (RandomAccessFile file = new RandomAccessFile(this.genFilePath(), RW_MODE)) {
+        // 先加载主文件
+        loadFile(new File(genFilePath()));
+
+        // 加载所有备份文件
+        for (int i = 1; i <= 5; i++) {
+            File backup = new File(genFilePath() + "." + i + ".gz");
+            if (backup.exists()) {
+                try {
+                    File decompressed = decompressToFile(backup);
+                    loadFile(decompressed);
+                    decompressed.delete();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void loadFile(File fileto) {
+        try (RandomAccessFile file = new RandomAccessFile(fileto, RW_MODE)) {
             System.out.println("当前路径:" + this.genFilePath());
             long len = file.length();
             long start = 0;
@@ -128,6 +155,7 @@ public class NormalStore implements Store, AutoCloseable {
             e.printStackTrace();
         }
         LoggerUtil.info("NormalStore", logFormat, "reload index: " + index.toString());
+
     }
 
     @Override
@@ -147,6 +175,7 @@ public class NormalStore implements Store, AutoCloseable {
             // 保存到memTable
             //这里是自己实现的代码，先写入内存，如果内存表满了，再写入磁盘
 
+            writeWalLog(command); // 先写 WAL
             //批量写入
             memTable.put(key, command);
             System.out.println("当前长度：" + memTable.size());
@@ -172,6 +201,7 @@ public class NormalStore implements Store, AutoCloseable {
             byte[] commandBytes = JSONObject.toJSONBytes(command);
             indexLock.writeLock().lock();
 
+            writeWalLog(command); // 先写 WAL
             memTable.put(key, command);
             System.out.println("当前长度：" + memTable.size());
             if (memTable.size() >= MEMTABLE_FLUSH_THRESHOLD_COUNT) {
@@ -189,17 +219,47 @@ public class NormalStore implements Store, AutoCloseable {
     public String get(String key) {
         try {
             indexLock.readLock().lock();
+
+            // 1. 先查 memTable（尚未持久化的写入）
+            Command cmd = memTable.get(key);
+            if (cmd != null) {
+                System.out.println("从尚未持久化的写入记录查找");
+                if (cmd instanceof SetCommand) {
+                    return ((SetCommand) cmd).getValue();
+                } else if (cmd instanceof RmCommand) {
+                    return null; // 被删除
+                } else if (cmd instanceof SetexCommand && !isExpired(cmd)) {
+                    return ((SetexCommand) cmd).getValue();
+                }
+            }
+
+            // 2. 再查 tempMemTable（已持久化的有效数据）
+            cmd = tempMemTable.get(key);
+            if (cmd != null) {
+                System.out.println("从缓存（已持久化的有效数据）查找");
+                if (cmd instanceof SetCommand) {
+                    return ((SetCommand) cmd).getValue();
+                } else if (cmd instanceof RmCommand) {
+                    return null;
+                } else if (cmd instanceof SetexCommand && !isExpired(cmd)) {
+                    return ((SetexCommand) cmd).getValue();
+                }
+            }
+            System.out.println("从磁盘中查找");
             // 从索引中获取信息
             CommandPos cmdPos = index.get(key);
             if (cmdPos == null) {
                 return null;
             }
+            //提供数据缓存，查询时先从缓存中查找，缓存没有再从磁盘中查找数据。
+
+            //readByIndex是从磁盘中查找
             byte[] commandBytes = RandomAccessFileUtil.readByIndex(this.genFilePath(), cmdPos.getPos(), cmdPos.getLen());
 
             //将 JSON 格式的字符串解析为 JSONObject 对象
             JSONObject value = JSONObject.parseObject(new String(commandBytes));
             System.out.println("JSON序列为:" + value);
-            Command cmd = CommandUtil.jsonToCommand(value);
+            cmd = CommandUtil.jsonToCommand(value);
             if (cmd instanceof SetCommand) {
                 return ((SetCommand) cmd).getValue();
             }
@@ -230,6 +290,8 @@ public class NormalStore implements Store, AutoCloseable {
             // 写table（wal）文件
 //            RandomAccessFileUtil.writeInt(this.genFilePath(), commandBytes.length);
 //            int pos = RandomAccessFileUtil.write(this.genFilePath(), commandBytes);
+
+            writeWalLog(command); // 先写 WAL
             // 保存到memTable
             memTable.put(key, command);
             // 判断是否需要刷盘
@@ -307,8 +369,13 @@ public class NormalStore implements Store, AutoCloseable {
         }
 
         String filePath = genFilePath();
-        RandomAccessFile file = new RandomAccessFile(filePath, RW_MODE);
 
+        File filesp = new File(filePath);
+        // 检查当前文件大小
+        if (filesp.exists() && filesp.length() > MAX_FILE_SIZE) {
+            rotateFile(filesp); // 触发 Rotate
+        }
+        RandomAccessFile file = new RandomAccessFile(filePath, RW_MODE);
         try {
             // 定位到文件末尾
             file.seek(file.length());
@@ -365,7 +432,7 @@ public class NormalStore implements Store, AutoCloseable {
             RandomAccessFile tempFile = new RandomAccessFile(tempFilePath, RW_MODE);
             tempFile.setLength(0); // 清空文件内容
 
-            // 4. 将内存中有效的数据写入临时文件
+            // 4. 将缓存中有效的数据写入临时文件
             for (Map.Entry<String, Command> entry : tempMemTable.entrySet()) {
                 String key = entry.getKey();
                 Command command = entry.getValue();
@@ -501,5 +568,152 @@ public class NormalStore implements Store, AutoCloseable {
         }
     }
 
+    // 示例：WAL 写入逻辑
+    private void writeWalLog(Command command) throws IOException {
+        String walPath = dataDir + File.separator + "db.wal";
+        try (RandomAccessFile walFile = new RandomAccessFile(walPath, "rw")) {
+            walFile.seek(walFile.length());
+            byte[] bytes = JSONObject.toJSONBytes(command);
+            walFile.writeInt(bytes.length);
+            walFile.write(bytes);
+        }
+    }
+
+    private void replayWal() {
+        String walPath = dataDir + File.separator + "db.wal";
+        File file = new File(walPath);
+        if (!file.exists())
+        {
+            System.out.println("wal文件不存在......");
+            return;
+        }
+
+        try (RandomAccessFile walFile = new RandomAccessFile(walPath, R_MODE)) {
+            long len = walFile.length();
+            long pos = 0;
+            while (pos < len) {
+                int cmdLen = walFile.readInt();
+                byte[] bytes = new byte[cmdLen];
+                walFile.read(bytes);
+                JSONObject json = JSON.parseObject(new String(bytes, StandardCharsets.UTF_8));
+                Command command = CommandUtil.jsonToCommand(json);
+                if (command != null) {
+                    memTable.put(command.getKey(), command); // 重建 memTable
+                }
+                pos += 4 + cmdLen;
+            }
+            // 清空 WAL 文件
+            try (RandomAccessFile empty = new RandomAccessFile(walPath, RW_MODE)) {
+                empty.setLength(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //避免 WAL 文件无限增长，定期合并已提交操作。
+    @Override
+    public void compactWal() {
+        String walPath = dataDir + File.separator + "db.wal";
+        String tmpPath = walPath + ".tmp";
+
+        try (RandomAccessFile wal = new RandomAccessFile(walPath, R_MODE);
+             RandomAccessFile tmp = new RandomAccessFile(tmpPath, RW_MODE)) {
+
+            TreeMap<String, Command> dedupMap = new TreeMap<>();
+
+            long len = wal.length();
+            long pos = 0;
+            while (pos < len) {
+                int cmdLen = wal.readInt();
+                byte[] bytes = new byte[cmdLen];
+                wal.read(bytes);
+                JSONObject json = JSON.parseObject(new String(bytes, StandardCharsets.UTF_8));
+                Command command = CommandUtil.jsonToCommand(json);
+                if (command != null) {
+                    dedupMap.put(command.getKey(), command); // 去重
+                }
+                pos += 4 + cmdLen;
+            }
+
+            for (Command cmd : dedupMap.values()) {
+                byte[] bytes = JSONObject.toJSONBytes(cmd);
+                tmp.writeInt(bytes.length);
+                tmp.write(bytes);
+            }
+
+            // 替换原文件
+            new File(walPath).delete();
+            new File(tmpPath).renameTo(new File(walPath));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void rotateFile(File currentFile) throws IOException {
+        int maxBackupIndex = 5; // 最多保留 5 个备份文件
+        String baseName = currentFile.getAbsolutePath();
+
+        // 删除最老的备份文件（如果存在）
+        File oldestBackup = new File(baseName + "." + maxBackupIndex + ".gz");
+        if (oldestBackup.exists()) {
+            oldestBackup.delete();
+        }
+
+        // 将旧文件依次后移，并压缩
+        for (int i = maxBackupIndex - 1; i >= 1; i--) {
+            File src = new File(baseName + "." + i + ".gz");
+            if (src.exists()) {
+                File dest = new File(baseName + "." + (i + 1) + ".gz");
+                if (dest.exists()) {
+                    dest.delete();
+                }
+                src.renameTo(dest);
+            }
+        }
+
+        // 将当前文件重命名为 .1 并压缩
+        File backupFile = new File(baseName + ".1");
+        if (currentFile.exists()) {
+            if (backupFile.exists()) {
+                backupFile.delete();
+            }
+            currentFile.renameTo(backupFile);
+            compressFile(backupFile, new File(baseName + ".1.gz"));
+            backupFile.delete(); // 删除原始备份文件
+        }
+
+        // 创建新的空文件
+        currentFile.createNewFile();
+    }
+
+    private void compressFile(File source, File target) throws IOException {
+        try (FileInputStream fis = new FileInputStream(source);
+             GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(target))) {
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) > 0) {
+                gzos.write(buffer, 0, len);
+            }
+        }
+    }
+
+    private File decompressToFile(File gzipFile) throws IOException {
+        File tempFile = File.createTempFile("decompress", ".tmp");
+
+        try (GZIPInputStream gis = new GZIPInputStream(new FileInputStream(gzipFile));
+             FileOutputStream fos = new FileOutputStream(tempFile)) {
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+        }
+
+        return tempFile;
+    }
 
 }
